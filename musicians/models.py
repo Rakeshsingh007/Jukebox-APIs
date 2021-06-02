@@ -1,18 +1,18 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinLengthValidator
 
 
 
 class Musicians(models.Model):
 
-	MUSICIANCHOICES = (
+    MUSICIANCHOICES = (
         ("V", "Vocalist"),
         ("I", "Instrumentalist")
     )
 
-    musicians_name = models.CharField(max_length=100, validators=[MinValueValidator(3)])
-    musicians_type = models.CharField(choices=MUSICIANCHOICES)
-    album_albums = models.ManyToManyField('albums.MusicAlbums')
+    musicians_name = models.CharField(max_length=100, validators=[MinLengthValidator(3, message='Name should be minimum 3 characters')])
+    musicians_type = models.CharField(max_length=2, choices=MUSICIANCHOICES)
+    album_albums = models.ManyToManyField('albums.MusicAlbums', null=True, blank=True)
 
     class Meta:
         verbose_name = "Musician"

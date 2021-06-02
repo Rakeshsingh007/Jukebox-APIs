@@ -1,11 +1,11 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, MinLengthValidator
 
 
 
 class MusicAlbums(models.Model):
 
-	GENRECHOICES = (
+    GENRECHOICES = (
         ("CM", "Country music"),
         ("EM", "Electronic music"),
         ("RM", "Rock music"),
@@ -14,12 +14,12 @@ class MusicAlbums(models.Model):
         ("PM", "Pop music"),
     )
 
-    album_name = models.CharField(max_length=100, validators=[MinValueValidator(5)])
+    album_name = models.CharField(max_length=100, validators=[MinLengthValidator(5, message='Album Name should be minimum 5 characters')])
     album_release_date = models.DateField()
-    album_genre = models.CharField(choices=GENRECHOICES)
+    album_genre = models.CharField(max_length=2, choices=GENRECHOICES)
     album_price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(100),MaxValueValidator(1000)])
-    album_description = models.CharField(null=True, blank= True)
-    album_musicians = models.ManyToManyField('musicians.Musicians')
+    album_description = models.TextField(null=True, blank= True)
+    album_musicians = models.ManyToManyField('musicians.Musicians', null=True, blank=True)
 
     class Meta:
         verbose_name = "Music Album"
