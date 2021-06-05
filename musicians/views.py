@@ -37,7 +37,7 @@ class MusiciansView(viewsets.ModelViewSet):
 
         """API to update musician"""
 
-        queryset = Musicians.objects.filter(id=pk).first()
+        queryset = Musicians.objects.filter(musicians_token=pk).first()
         serializer = MusiciansSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -63,7 +63,7 @@ class MusiciansView(viewsets.ModelViewSet):
         """API to get detail of  musician"""
 
         data = dict()
-        queryset = Musicians.objects.filter(id=pk).first()
+        queryset = Musicians.objects.filter(musicians_token=pk).first()
         if queryset:
         	data = MusiciansSerializer(queryset, many=False).data
         return Response({"status": "success", "data": data}, status=status.HTTP_200_OK)
@@ -79,12 +79,14 @@ class ListAlbumMusicians(APIView):
 
     serializer_class = MusiciansSerializer
 
-    def get(self, request, id):
+    def get(self, request, id): 
 
-        queryset = MusicAlbums.objects.prefetch_related('album_musicians').filter(id=id).first().album_musicians.all().order_by("musicians_name")
-        data = MusiciansSerializer(queryset, many=True).data
-        return Response({"status": "success", "data": data}, status=status.HTTP_200_OK)
-
+        try:
+            queryset = MusicAlbums.objects.prefetch_related('album_musicians').filter(album_token=id).first().album_musicians.all().order_by("musicians_name")
+            data = MusiciansSerializer(queryset, many=True).data
+            return Response({"status": "success", "data": data}, status=status.HTTP_200_OK)
+        except:
+            return Response({"status": "success", "data":  {'detail': 'NOT FOUND'}}, status=status.HTTP_404_NOT_FOUND)
 
 class ListSortedAlbums(APIView):
 
@@ -97,6 +99,9 @@ class ListSortedAlbums(APIView):
 
     def get(self, request, id):
 
-        queryset = Musicians.objects.filter(id=id).first().musicalbums_set.all().order_by("album_price")
-        data = AlbumSerializer(queryset, many=True).data
-        return Response({"status": "success", "data": data}, status=status.HTTP_200_OK)
+        try:
+            queryset = Musicians.objects.filter(musicians_token=id).first().musicalbums_set.all().order_by("album_price")
+            data = AlbumSerializer(queryset, many=True).data
+            return Response({"status": "success", "data": data}, status=status.HTTP_200_OK)
+        except:
+            return Response({"status": "success", "data":  {'detail': 'NOT FOUND'}}, status=status.HTTP_404_NOT_FOUND)

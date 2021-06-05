@@ -5,6 +5,7 @@ from . models import Musicians
 
 
 class MusiciansAdmin(admin.ModelAdmin):
+	exclude = ("musicians_token",)
 	ordering = ('id',)
 	list_per_page = 50
 	list_display =  ('musicians_name','musicians_type')

@@ -5,6 +5,7 @@ from . models import MusicAlbums
 
 
 class MusicAlbumsAdmin(admin.ModelAdmin):
+	exclude = ("album_token",)
 	ordering = ('id',)
 	list_per_page = 50
 	list_display =  ('album_name','album_release_date','album_genre','album_price', 'album_description')

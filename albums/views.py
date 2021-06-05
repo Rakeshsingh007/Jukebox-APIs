@@ -36,7 +36,7 @@ class MusicAlbumsView(viewsets.ModelViewSet):
 
         """API to update albums"""
 
-        queryset = MusicAlbums.objects.filter(id=pk).first()
+        queryset = MusicAlbums.objects.filter(album_token=pk).first()
         serializer = AlbumSerializer(queryset, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -64,7 +64,7 @@ class MusicAlbumsView(viewsets.ModelViewSet):
         """API to get detail of  albums"""
 
         data = dict()
-        queryset = MusicAlbums.objects.filter(id=pk).first()
+        queryset = MusicAlbums.objects.filter(album_token=pk).first()
         if queryset:
         	data = AlbumSerializer(queryset, many=False).data
         return Response({"status": "success", "data": data}, status=status.HTTP_200_OK)
